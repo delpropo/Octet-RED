@@ -1,0 +1,95 @@
+#for 1500 points of data
+PooledData <- Slopesubtassoc
+DataForSlopeSubtraction <- PooledData  #initial data transfered to a new variable
+slopesubtracted <- data.frame() #declare the new data as a data.frame
+
+#numberofcolumns <- ncol(DataForSlopeSubtraction)   #number of columns for use in 
+slope <-vector()
+slopesubtracted[1:1500,1] <- PooledData[1:1500,1] #sets the time
+
+
+for(i in 2:ncol(DataForSlopeSubtraction))
+{
+  
+  slope[i] <-lm(DataForSlopeSubtraction[1200:1500,i] ~ DataForSlopeSubtraction[1200:1500,1])$coefficient[2] #inputs
+  slopesubtracted[1:1500,i] <- (DataForSlopeSubtraction[1:1500,i] - DataForSlopeSubtraction[1:1500,1]*slope[i])
+}
+
+
+
+
+write.table(slopesubtracted, "c:/temp/slopesubtracted.txt", sep="\t")
+
+
+
+
+#for 3000 points of data
+
+
+DataForSlopeSubtraction <- PooledData  #initial data transfered to a new variable
+slopesubtracted <- data.frame() #declare the new data as a data.frame
+
+#numberofcolumns <- ncol(DataForSlopeSubtraction)   #number of columns for use in 
+slope <-vector()
+slopesubtracted[1:3000,1] <- PooledData[1:3000,1] #sets the time
+
+
+for(i in 2:ncol(DataForSlopeSubtraction))
+{
+  
+  slope[i] <-lm(DataForSlopeSubtraction[2700:3000,i] ~ DataForSlopeSubtraction[2700:3000,1])$coefficient[2] #inputs
+  slopesubtracted[1:3000,i] <- (DataForSlopeSubtraction[1:3000,i] - DataForSlopeSubtraction[1:3000,1]*slope[i])
+}
+
+
+
+
+write.table(slopesubtracted, "c:/temp/slopesubtracted.txt", sep="\t")
+
+
+
+#for 4500 points of data
+
+
+DataForSlopeSubtraction <- PooledData  #initial data transfered to a new variable
+slopesubtracted <- data.frame() #declare the new data as a data.frame
+
+#numberofcolumns <- ncol(DataForSlopeSubtraction)   #number of columns for use in 
+slope <-vector()
+slopesubtracted[1:4500,1] <- PooledData[1:4500,1] #sets the time
+
+
+for(i in 2:ncol(DataForSlopeSubtraction))
+{
+  
+  slope[i] <-lm(DataForSlopeSubtraction[4200:4500,i] ~ DataForSlopeSubtraction[4200:4500,1])$coefficient[2] #inputs
+  slopesubtracted[1:4500,i] <- (DataForSlopeSubtraction[1:4500,i] - DataForSlopeSubtraction[1:4500,1]*slope[i])
+}
+
+
+
+
+write.table(slopesubtracted, "c:/temp/slopesubtracted.txt", sep="\t")
+
+#for 6000 points of data
+
+
+DataForSlopeSubtraction <- PooledData  #initial data transfered to a new variable
+slopesubtracted <- data.frame() #declare the new data as a data.frame
+
+#numberofcolumns <- ncol(DataForSlopeSubtraction)   #number of columns for use in 
+slope <-vector()
+slopesubtracted[1:6000,1] <- PooledData[1:6000,1] #sets the time
+
+
+for(i in 2:ncol(DataForSlopeSubtraction))
+{
+  
+  slope[i] <-lm(DataForSlopeSubtraction[5700:6000,i] ~ DataForSlopeSubtraction[5700:6000,1])$coefficient[2] #inputs
+  slopesubtracted[1:6000,i] <- (DataForSlopeSubtraction[1:6000,i] - DataForSlopeSubtraction[1:6000,1]*slope[i])
+}
+
+
+
+
+write.table(slopesubtracted, "c:/temp/slopesubtracted.txt", sep="\t")
