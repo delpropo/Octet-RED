@@ -1,0 +1,175 @@
+##Read files 
+filenames <- list.files(path="C:/R/data/crna", pattern="*.xls") #lists the filenames properly
+
+##Create list of data frame names without the ".csv" part 
+nchar(filenames)
+names <- filenames # 
+
+
+## redo of load all files
+for(i in names){
+tempname <- i
+    filepath <- file.path("C:/R/data/crna",paste(tempname,"",sep=""))
+    assign(i, read.table(filepath, fill=T, skip=1))
+}
+
+############## End of reading in data from folder
+
+
+
+#########Merge data into a usable form
+
+CombinedConcentrations = 0
+CombinedData = 0
+FileNumber = length(na.omit(names))#count number of non NA values in a vector for loop
+
+
+for(i in 1:FileNumber) { #rbind to create a vector with all data
+
+
+df = get(names[i]) # put value of found object name into df object
+concentrations = df[1,] # copies concentration values into concentration vector 
+concentrations = concentrations[, -c(1)] # remove the first column that has label only
+#edit(concentrations)
+CombinedConcentrations = cbind(CombinedConcentrations,concentrations) # put all concentration data into a single vector
+df = df[-(1:4), -c(1,3,5,7,9,11,13,15,17,19,21,23,25) ]   # remove unnecessary data leaving only signals
+#edit(df)
+
+CombinedData = cbind(CombinedData,df)
+#edit(CombinedData)
+
+ nam <- paste("r",i, sep=".")
+ assign(nam, 1:i)
+
+
+
+}
+
+
+#########End data merg into a usable form
+
+
+#######################################Remove Empty data
+
+####CombinedData
+##ncol(CombinedData)
+
+##### Cleans up Combined Data
+numberofcolumns <- ncol(CombinedData) #number of columns total
+columnstoremove = 0
+
+for(i in 1:numberofcolumns) {  #  run this for every column 
+  
+  DataTest <- as.numeric(as.character(CombinedData[5, i]))  #converting factor to numeric without losing information
+  if( is.na(DataTest))
+    columnstoremove <-cbind(columnstoremove, i)#list of columns to remove
+}
+
+TruncatedData <- CombinedData[, -columnstoremove]
+
+
+
+
+
+
+
+##### Cleans up Combined Concentrations
+numberofcolumns <- ncol(CombinedConcentrations) #number of columns total
+columnstoremove = 0
+
+for(i in 1:numberofcolumns) {  #  run this for every column 
+  
+  DataTest <- as.numeric(as.character(CombinedConcentrations[1, i]))  #converting factor to numeric without losing information
+  if( is.na(DataTest))
+    columnstoremove <-cbind(columnstoremove, i)#list of columns to remove
+}
+
+TruncatedConcentrations <- CombinedConcentrations[, -columnstoremove]
+
+
+
+####################################End Remove empty data
+
+#################Transform all data into numeric
+
+
+TempData  <- TruncatedData
+numberofcolumns <-ncol(TruncatedData)
+numberofrows <- nrow(TruncatedData)
+numberofcolumns
+numberofrows
+
+CombinedTransform <-data.frame(matrix(ncol = numberofcolumns, nrow = numberofrows))  #df <- data.frame(matrix(ncol = 300, nrow = 100))
+dim(CombinedTransform)
+
+for(i in 1:numberofcolumns) {  #  run this for every column 
+  
+  TestTransform <- as.numeric(as.character(TempData[ , i]))
+  CombinedTransform[ , i] <- TestTransform
+  
+}
+
+
+TempConc <-  TruncatedConcentrations
+numberofcolumns <-ncol(TruncatedConcentrations)
+numberofrows <- nrow(TruncatedConcentrations)
+numberofcolumns
+numberofrows
+
+CombinedTransformConc <-data.frame(matrix(ncol = numberofcolumns, nrow = numberofrows))  #df <- data.frame(matrix(ncol = 300, nrow = 100))
+dim(CombinedTransformConc)
+
+for(i in 1:numberofcolumns) {  #  run this for every column 
+  
+  TestTransform <- as.numeric(as.character(TempConc[ , i]))
+  CombinedTransformConc[ , i] <- TestTransform
+  
+}
+
+
+
+
+#################End of Transform all data into numeric
+
+
+
+
+
+
+
+
+
+#########Begin data export into excel
+
+#write.table(CombinedConcentrations, "C:/R/export/chk1conc1_39_14Data.csv", sep = ",",row.names=F)
+#write.table(CombinedData, "C:/R/export/chk1data1_29_14data.csv", sep = ",",row.names=F)
+
+#write.table(TruncatedData, "C:/R/export/truncateddata.csv", sep = ",",row.names=F)
+write.table(TruncatedConcentrations, "C:/R/export/truncatedconcentrations.csv", sep = ",",row.names=F)
+
+#write.table(CombinedTransform, "C:/R/export/numericdata.csv", sep = ",",row.names=F)
+#write.table(CombinedTransformConc, "C:/R/export/numericconc.csv", sep = ",",row.names=F)
+
+#########End data export into excel
+
+
+## Use CombinedTransformConc and CombinedTransform
+
+CombinedDataFrame <- rbind(CombinedTransformConc, CombinedTransform) ##Combine concentration and binding data
+
+write.table(CombinedDataFrame, "C:/R/export/testing.csv", sep = ",",row.names=F)
+
+###End of Combined data 
+
+
+
+
+#### Function to import labeling data from Octet ReportPointAnalysis.csv and put it into CombinedDataFrame 
+reportpointanalysis =  read.csv("C:/R/data/testing/ReportPointAnalysis.csv", skip=1)
+
+transposeddata <- t(reportpointanalysis) #transpose function
+DataLabels <- cbind("Time", transposeddata)
+Finaldata <-rbind(DataLabels[3,], CombinedDataFrame)
+
+write.table(Finaldata, "C:/R/export/crna.csv", sep = ",",row.names=F)
+#### End of Function to import labeling data from Octet ReportPointAnalysis.csv and put it into CombinedDataFrame 
